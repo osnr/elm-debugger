@@ -50,18 +50,21 @@ editor filePath code =
         H.script ! A.src "/codemirror-3.x/lib/codemirror.js" $ mempty
         H.script ! A.src "/codemirror-3.x/mode/elm/elm.js" $ mempty
         mapM_ (\theme -> H.link ! A.rel "stylesheet" ! A.href (toValue ("/codemirror-3.x/theme/" ++ theme ++ ".css" :: String))) themes
-        H.link ! A.rel "stylesheet" ! A.type_ "text/css" ! A.href "/misc/editor.css"
-        H.script ! A.type_ "text/javascript" ! A.src "/misc/showdown.js" $ mempty
+        H.script ! A.type_ "text/javascript" ! A.src "/elm-runtime.js" $ mempty
+        H.script ! A.type_ "text/javascript" ! A.src "/build/Editor.js" $ mempty
         H.script ! A.type_ "text/javascript" ! A.src "/misc/editor.js" $ mempty
-      H.body $ do
-        H.form ! A.id "inputForm" ! A.action "/compile" ! A.method "post" ! A.target "output" $ do
-           H.div ! A.id "editor_box" $
-             H.textarea ! A.name "input" ! A.id "input" $ toHtml ('\n':code)
-           H.div ! A.id "options" $ do
-             bar "documentation" docs
-             bar "editor_options" editorOptions
-             bar "always_on" (buttons >> options)
+        H.style $ ".CodeMirror { height: 100%; }"
+      H.body ! A.style "margin: 0; padding: 0; overflow: hidden" $ do
+        H.div ! A.id "embed" ! A.style "width: 100%; height: 100%" $ mempty
         H.script ! A.type_ "text/javascript" $ "initEditor();"
+        -- H.form ! A.id "inputForm" ! A.action "/compile" ! A.method "post" ! A.target "output" $ do
+        --    H.div ! A.id "editor_box" $
+        --      H.textarea ! A.name "input" ! A.id "input" $ toHtml ('\n':code)
+        --    H.div ! A.id "options" $ do
+        --      bar "documentation" docs
+        --      bar "editor_options" editorOptions
+        --      bar "always_on" (buttons >> options)
+        -- H.script ! A.type_ "text/javascript" $ "initEditor();"
 
 bar :: AttributeValue -> Html -> Html
 bar id' body = H.div ! A.id id' ! A.class_ "option" $ body
